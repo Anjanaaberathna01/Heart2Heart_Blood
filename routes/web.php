@@ -3,6 +3,7 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\AdminController;
+use App\Http\Controllers\DonationController;
 use Illuminate\Support\Facades\Password;
 use Illuminate\Auth\Events\PasswordReset;
 use Illuminate\Http\Request;
@@ -107,16 +108,17 @@ Route::middleware('guest')->group(function () {
 Route::middleware('auth')->group(function () {
     Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
      // Show donate request form
-    Route::get('/donate-request', [AuthController::class, 'showDonateRequestForm'])->name('donate.request');
+    Route::get('/donate-request', [DonationController::class, 'showDonateRequestForm'])->name('donate.request');
+    Route::post('/donate-request', [DonationController::class, 'storeDonationRequest'])->name('donate.request.store');
 
 });
 
                 /*
-                    /
-                    /
+                    /                   /
+                    /                   /
                         Admin routes
-                    /
-                    /
+                    /                   /
+                    /                   /
                 */
 Route::middleware(['auth', 'admin'])->group(function () {
 
@@ -133,4 +135,7 @@ Route::middleware(['auth', 'admin'])->group(function () {
     Route::get('/admin/hospitals/availability/manage', [AdminController::class, 'manageAvailability'])->name('admin.available-hospital');
     Route::put('/admin/hospitals/{hospital}/toggle-availability', [AdminController::class, 'toggleAvailability'])->name('admin.hospitals.toggle-availability');
     Route::get('/admin/hospitals-map', [AdminController::class, 'showHospitalsMap'])->name('admin.hospitals-map');
+    Route::get('/admin/donate-request', [AdminController::class, 'viewDonationRequests'])->name('admin.donate.request');
+    Route::post('/admin/donate-request/{donationRequest}/approve', [AdminController::class, 'approveDonationRequest'])->name('admin.donate.approve');
+    Route::post('/admin/donate-request/{donationRequest}/reject', [AdminController::class, 'rejectDonationRequest'])->name('admin.donate.reject');
 });

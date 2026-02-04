@@ -170,15 +170,16 @@
         <p>Request blood donation from our network of hospitals</p>
     </div>
 
-    <div class="success-message" id="successMessage">
-        <strong>Success!</strong> Your donation request has been submitted successfully. We'll notify you soon.
+    <div class="success-message" id="successMessage" style="display: {{ session('success') ? 'block' : 'none' }};">
+        <strong>Success!</strong> {{ session('success') ?? "Your donation request has been submitted successfully. We'll notify you soon." }}
     </div>
 
     <div class="info-box">
         <p><strong>Information:</strong> Please fill in your details and blood type. Our partner hospitals will review your request and contact you as soon as compatible blood is available.</p>
     </div>
 
-    <form id="donationForm">
+    <form id="donationForm" method="POST" action="{{ route('donate.request.store') }}">
+        @csrf
         <div class="form-group">
             <label for="name">Full Name <span style="color: #e10600;">*</span></label>
             <input type="text" id="name" name="name" required placeholder="Enter your full name" value="{{ auth()-> user()->name ?? '' }}">
@@ -195,8 +196,13 @@
         </div>
 
         <div class="form-group">
-            <label for="bloodType">Blood Type Required <span style="color: #e10600;">*</span></label>
-            <select id="bloodType" name="bloodType" required>
+            <label for="blood_type">Blood Type Required <span style="color: #e10600;">*</span></label>
+            <select id="blood_type" name="blood_type" required>
+                        <div class="form-group">
+                            <label for="units">Number of Units Required <span style="color: #e10600;">*</span></label>
+                            <input type="number" id="units" name="units" required placeholder="Enter number of units" min="1" value="1">
+                        </div>
+
                 <option value="">Select Blood Type</option>
                 <option value="O+">O+ (O Positive)</option>
                 <option value="O-">O- (O Negative)</option>
@@ -233,8 +239,8 @@
             </select>
         </div>
         <div class="form-group">
-            <label for="hospital">Preferred Hospital <span style="color: #e10600;">*</span></label>
-            <select id="hospital" name="hospital" required>
+            <label for="hospital_id">Preferred Hospital <span style="color: #e10600;">*</span></label>
+            <select id="hospital_id" name="hospital_id" required>
                 <option value="">Select Hospital</option>
             </select>
         </div>
@@ -287,7 +293,7 @@
 
     function loadHospitals() {
         const district = document.getElementById('district').value;
-        const hospitalSelect = document.getElementById('hospital');
+        const hospitalSelect = document.getElementById('hospital_id');
         hospitalSelect.innerHTML = '<option value="">Select Hospital</option>';
 
         console.log('Selected District:', district);
@@ -309,18 +315,7 @@
         }
     }
 
-    document.getElementById('donationForm').addEventListener('submit', function(e) {
-        e.preventDefault();
-
-        const successMessage = document.getElementById('successMessage');
-        successMessage.style.display = 'block';
-
-        this.reset();
-
-        setTimeout(() => {
-            successMessage.style.display = 'none';
-        }, 5000);
-    });
+    // Form will submit to server endpoint
 </script>
 
 </body>

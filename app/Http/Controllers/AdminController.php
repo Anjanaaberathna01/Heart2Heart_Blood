@@ -3,7 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Models\Hospital;
+use App\Models\DonationRequest;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
 
 class AdminController extends Controller
@@ -12,7 +14,23 @@ class AdminController extends Controller
     // show dashboard
     public function showDashboard(){
         $hospitals = Hospital::orderBy('created_at', 'desc')->get();
-        return view('blood_admin.dashboard', ['hospitals' => $hospitals]);
+
+        $requestStats = [
+            'pending' => DonationRequest::where('status', 'pending')->count(),
+            'approved' => DonationRequest::where('status', 'approved')->count(),
+            'rejected' => DonationRequest::where('status', 'rejected')->count(),
+        ];
+
+        $latestRequests = DonationRequest::with(['user', 'hospital'])
+            ->orderBy('created_at', 'desc')
+            ->take(5)
+            ->get();
+
+        return view('blood_admin.dashboard', [
+            'hospitals' => $hospitals,
+            'requestStats' => $requestStats,
+            'latestRequests' => $latestRequests,
+        ]);
     }
 
     // Show add hospital form
@@ -121,6 +139,63 @@ class AdminController extends Controller
     {
         $hospitals = Hospital::orderBy('created_at', 'desc')->get();
         return view('blood_admin.hospitals-map', ['hospitals' => $hospitals]);
+    }
+
+    // show donate request form
+    public function showLoginForm(){
+        return view('blood_admin.donate-request');
+    }
+
+    // View all donation requests
+    public function viewDonationRequests()
+    {
+        $requests = DonationRequest::with(['user', 'hospital'])
+            ->orderBy('created_at', 'desc')
+            ->get();
+
+        return view('blood_admin.donate-request', [
+            'donationRequests' => $requests
+        ]);
+    }
+
+    // Approve donation request
+    public function approveDonationRequest(DonationRequest $donationRequest, Request $request)
+    {
+        $request->validate([
+            'admin_notes' => 'nullable|string|max:500'
+        ]);
+
+        $donationRequest->update([
+            'status' => 'approved',
+            'admin_notes' => $request->admin_notes,
+            'approved_at' => now()
+        ]);
+
+        return back()->with('success', 'Donation request approved successfully!');
+    }
+
+    // Reject donation request
+    public function rejectDonationRequest(DonationRequest $donationRequest, Request $request)
+    {
+        $request->validate([
+            'admin_notes' => 'required|string|max:500'
+        ]);
+
+        $donationRequest->update([
+            'status' => 'rejected',
+            'admin_notes' => $request->admin_notes,
+            'rejected_at' => now()
+        ]);
+
+        return back()->with('success', 'Donation request rejected successfully!');
+    }
+
+    // Handle admin logout
+    public function logout(Request $request){
+        Auth::logout();
+        $request->session()->invalidate();
+        $request->session()->regenerateToken();
+        return redirect()->route('admin.login')->with('success', 'Logged out successfully.');
     }
 
 }
