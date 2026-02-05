@@ -91,6 +91,25 @@ class AuthController extends Controller{
         return redirect('/dashboard')->with('success', 'Registration successful!');
     }
 
+    // Update Profile
+    public function updateProfile(Request $request){
+        $request->validate([
+            'name' => 'required|string|max:255',
+            'email' => 'required|string|email|max:255|unique:users,email,' . Auth::id(),
+            'phone' => 'nullable|digits:10',
+            'blood_type' => 'nullable|in:O+,O-,A+,A-,B+,B-,AB+,AB-',
+        ]);
+
+        $user = Auth::user();
+        $user->name = $request->name;
+        $user->email = $request->email;
+        $user->phone = $request->phone;
+        $user->blood_type = $request->blood_type;
+        $user->save();
+
+        return back()->with('success', 'Profile updated successfully.');
+    }
+
     // Show forgot password form
     public function showForgotPasswordForm()
     {
@@ -116,6 +135,52 @@ class AuthController extends Controller{
         } catch (\Exception $e) {
             return back()->withErrors(['email' => 'Failed to send OTP. Please try again.']);
         }
+    }
+
+    // update password form
+    public function updatePasswordForm(Request $request){
+
+        $request->validate([
+            'email' => 'required|email|exists:users,email',
+            'password' => 'required|string|min:6|confirmed',
+            'password_confirmation' => 'required|string|min:6',
+        ]);
+
+        $user = User::where('email', $request->email)->first();
+        $user->password = Hash::make($request->password);
+        $user->save();
+
+        return back()->with('success', 'Password updated successfully.');
+
+    }
+
+    // Show change password form
+    public function changePassword(Request $request){
+
+        $request->validate([
+            'current_password' => 'required|string|min:6',
+            'new_password' => 'required|string|min:6|confirmed',
+            'new_password_confirmation' => 'required|string|min:6',
+        ]);
+
+        $user = Auth::user();
+
+        // Check if current password is correct
+        if (!Hash::check($request->current_password, $user->password)) {
+            return back()->withErrors(['current_password' => 'Current password is incorrect.']);
+        }
+        else if (strlen($request->new_password) < 6){
+            return back()->withErrors(['new_password' => 'New password must be at least 6 characters.']);
+        }
+        else if ($request->new_password != $request->new_password_confirmation){
+            return back()->withErrors(['new_password_confirmation' => 'New password confirmation does not match.']);
+        }
+
+        // Update password
+        $user->password = Hash::make($request->new_password);
+        $user->save();
+        return back()->with('success', 'Password changed successfully.');
+
     }
 
     // Show verify OTP form

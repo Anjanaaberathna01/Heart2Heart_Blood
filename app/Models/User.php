@@ -23,6 +23,7 @@ class User extends Authenticatable
         'phone',
         'address',
         'role',
+        'blood_type',
 
     ];
 
@@ -47,5 +48,10 @@ class User extends Authenticatable
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
         ];
+    }
+
+    public function donations()
+    {
+        return $this->hasMany(DonationRequest::class, 'user_id');
     }
 }

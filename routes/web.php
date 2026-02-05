@@ -42,6 +42,9 @@ Route::get('/profile', function () {
     return view('users.profile');
 })->name('user.profile');
 
+// User profile update
+Route::post('/profile', [AuthController::class, 'updateProfile'])->name('user.profile.update');
+
 // User hospitals map page
 Route::get('/hospitals-map', function () {
     $hospitals = \App\Models\Hospital::orderBy('created_at', 'desc')->get();
@@ -102,7 +105,19 @@ Route::middleware('guest')->group(function () {
             : back()->withErrors(['email' => [__($status)]]);
     })->name('password.update');
 
-       });
+    Route::put('profile/update-password', [AuthController::class, 'updatePasswordForm'])->name('user.profile-update');
+    Route::post('profile/change-password', [AuthController::class, 'changePassword'])->name('user.change-password');
+
+});
+
+                /*
+                    /
+                    /
+                        Authenticated routes
+                    /
+                    /
+                */
+
 
 // Authenticated routes
 Route::middleware('auth')->group(function () {

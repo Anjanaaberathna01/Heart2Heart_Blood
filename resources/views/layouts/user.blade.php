@@ -462,25 +462,25 @@
             <ul class="nav-menu" id="navMenu">
                 @if(auth()->check())
                     <li class="nav-item">
-                        <a href="/" class="nav-link">
+                        <a href="/dashboard" class="nav-link">
                             <i class="fas fa-home"></i>
                             <span>Home</span>
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a href="#blood-request" class="nav-link">
+                        <a href="/donate-request" class="nav-link">
                             <i class="fas fa-droplet"></i>
                             <span>Blood Request</span>
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a href="#history" class="nav-link">
+                        <a href="/history" class="nav-link">
                             <i class="fas fa-history"></i>
                             <span>History</span>
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a href="#hospitals" class="nav-link">
+                        <a href="/hospitals" class="nav-link">
                             <i class="fas fa-hospital"></i>
                             <span>Hospitals</span>
                         </a>

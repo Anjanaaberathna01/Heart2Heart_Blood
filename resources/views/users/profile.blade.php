@@ -209,23 +209,23 @@
         <div class="profile-info">
             <div class="info-group">
                 <label>Full Name</label>
-                <span>John Doe</span>
+                <input type="text" value="{{ auth()->user()->name ?? '' }}" disabled>
             </div>
             <div class="info-group">
                 <label>Email Address</label>
-                <span>john.doe@example.com</span>
+                <input type="email" value="{{ auth()->user()->email ?? '' }}" disabled>
             </div>
             <div class="info-group">
                 <label>Phone Number</label>
-                <span>+94 712 345 678</span>
+                <input type="tel" value="{{ auth()->user()->phone ?? '' }}" disabled>
             </div>
             <div class="info-group">
                 <label>Blood Type</label>
-                <span>O+ (Positive)</span>
+                <input type="text" value="{{ auth()->user()->blood_type ?? '' }}" disabled>
             </div>
             <div class="info-group">
                 <label>Member Since</label>
-                <span>January 10, 2026</span>
+                <input type="text" value="{{ auth()->user()->created_at->format('F d, Y') }}" disabled>
             </div>
             <div class="info-group">
                 <label>Account Status</label>
@@ -243,7 +243,7 @@
                 <span class="label">Donations Made</span>
             </div>
             <div class="stat-card" style="background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);">
-                <span class="number">1</span>
+                <span class="number">{{ auth()->user()->donations()->count() }}</span>
                 <span class="label">Requests Made</span>
             </div>
             <div class="stat-card" style="background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);">
@@ -257,37 +257,43 @@
     <div class="profile-section">
         <h2>Update Profile</h2>
 
-        <form method="POST">
-            @csrf
+        @if(session('success'))
+            <div class="alert alert-success">
+                {{ session('success') }}
+            </div>
+        @endif
 
+        <form method="POST" action="{{ route('user.profile.update') }}">
+            @csrf
+            @method('POST')
             <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px;">
                 <div class="form-group">
                     <label>Full Name</label>
-                    <input type="text" name="name" value="John Doe" required>
+                    <input type="text" name="name" value="{{ auth()->user()->name ?? '' }}" required>
                 </div>
 
                 <div class="form-group">
                     <label>Email Address</label>
-                    <input type="email" name="email" value="john.doe@example.com" required>
+                    <input type="email" name="email" value="{{ auth()->user()->email ?? '' }}" required>
                 </div>
 
                 <div class="form-group">
                     <label>Phone Number</label>
-                    <input type="tel" name="phone" value="+94 712 345 678">
+                    <input type="tel" name="phone" value="{{ auth()->user()->phone ?? '' }}" required>
                 </div>
 
                 <div class="form-group">
                     <label>Blood Type</label>
                     <select name="blood_type" style="width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 6px; font-size: 14px; font-family: 'Poppins', Arial, sans-serif;">
                         <option value="">Select Blood Type</option>
-                        <option value="O+" selected>O+ (O Positive)</option>
-                        <option value="O-">O- (O Negative)</option>
-                        <option value="A+">A+ (A Positive)</option>
-                        <option value="A-">A- (A Negative)</option>
-                        <option value="B+">B+ (B Positive)</option>
-                        <option value="B-">B- (B Negative)</option>
-                        <option value="AB+">AB+ (AB Positive)</option>
-                        <option value="AB-">AB- (AB Negative)</option>
+                        <option value="O+" {{ auth()->user()->blood_type == 'O+' ? 'selected' : '' }}>O+ (O Positive)</option>
+                        <option value="O-" {{ auth()->user()->blood_type == 'O-' ? 'selected' : '' }}>O- (O Negative)</option>
+                        <option value="A+" {{ auth()->user()->blood_type == 'A+' ? 'selected' : '' }}>A+ (A Positive)</option>
+                        <option value="A-" {{ auth()->user()->blood_type == 'A-' ? 'selected' : '' }}>A- (A Negative)</option>
+                        <option value="B+" {{ auth()->user()->blood_type == 'B+' ? 'selected' : '' }}>B+ (B Positive)</option>
+                        <option value="B-" {{ auth()->user()->blood_type == 'B-' ? 'selected' : '' }}>B- (B Negative)</option>
+                        <option value="AB+" {{ auth()->user()->blood_type == 'AB+' ? 'selected' : '' }}>AB+ (AB Positive)</option>
+                        <option value="AB-" {{ auth()->user()->blood_type == 'AB-' ? 'selected' : '' }}>AB- (AB Negative)</option>
                     </select>
                 </div>
             </div>
@@ -308,7 +314,15 @@
     <div class="profile-section">
         <h2>Change Password</h2>
 
-        <form method="POST" action="/change-password">
+        @if ($errors->any())
+            <div class="alert alert-danger">
+                @foreach ($errors->all() as $error)
+                    <div>{{ $error }}</div>
+                @endforeach
+            </div>
+
+        @endif
+        <form method="POST" action="{{ route('user.change-password') }}">
             @csrf
 
             <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px; max-width: 600px;">
