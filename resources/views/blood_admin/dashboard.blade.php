@@ -18,64 +18,6 @@
 			min-height: 100vh;
 		}
 
-		/* Header */
-		.header {
-			background: linear-gradient(135deg, #e10600 0%, #b80500 100%);
-			color: white;
-			padding: 20px 40px;
-			box-shadow: 0 2px 15px rgba(0, 0, 0, 0.1);
-		}
-
-		.header-content {
-			max-width: 1400px;
-			margin: 0 auto;
-			display: flex;
-			justify-content: space-between;
-			align-items: center;
-			flex-wrap: wrap;
-			gap: 15px;
-		}
-
-		.logo-section h1 {
-			font-size: 24px;
-			font-weight: 700;
-			margin-bottom: 5px;
-		}
-
-		.logo-section p {
-			font-size: 13px;
-			opacity: 0.9;
-		}
-
-		.header-actions {
-			display: flex;
-			gap: 12px;
-			align-items: center;
-		}
-
-		.header-btn {
-			padding: 10px 20px;
-			background: rgba(255, 255, 255, 0.2);
-			color: white;
-			text-decoration: none;
-			border-radius: 8px;
-			font-weight: 600;
-			font-size: 14px;
-			transition: all 0.3s ease;
-			border: 2px solid rgba(255, 255, 255, 0.3);
-		}
-
-		.header-btn:hover {
-			background: rgba(255, 255, 255, 0.3);
-			transform: translateY(-2px);
-		}
-
-		.logout-btn {
-			background: rgba(0, 0, 0, 0.2);
-			border: 2px solid rgba(255, 255, 255, 0.4);
-			cursor: pointer;
-		}
-
 		/* Main Container */
 		.container {
 			max-width: 1400px;
@@ -456,23 +398,8 @@
 	</style>
 </head>
 <body>
-	<!-- Header -->
-	<div class="header">
-		<div class="header-content">
-			<div class="logo-section">
-				<h1>🩸 Heart2Heart Blood Bank</h1>
-				<p>Administrator Dashboard</p>
-			</div>
-			<div class="header-actions">
-				<a href="{{ route('admin.add.hospital') }}" class="header-btn">➕ Add Hospital</a>
-				<a href="{{ route('admin.donate.request') }}" class="header-btn">📋 All Requests</a>
-				<form action="{{ route('admin.logout') }}" method="POST" style="display: inline;">
-					@csrf
-					<button type="submit" class="header-btn logout-btn">🚪 Logout</button>
-				</form>
-			</div>
-		</div>
-	</div>
+	<!-- Admin Navigation Bar -->
+	@include('layouts.admin-nav')
 
 	<!-- Main Container -->
 	<div class="container">

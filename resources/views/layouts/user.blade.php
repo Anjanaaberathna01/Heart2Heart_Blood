@@ -445,118 +445,18 @@
     </style>
 </head>
 <body>
-    <!-- Navigation Bar -->
-    <nav class="navbar">
-        <div class="navbar-container">
-            <a href="/" class="navbar-brand">
-                <span class="logo-icon">❤️</span>
-                <span>Heart2Heart LK</span>
-            </a>
-
-            <button class="menu-toggle" id="menuToggle">
-                <span></span>
-                <span></span>
-                <span></span>
-            </button>
-
-            <ul class="nav-menu" id="navMenu">
-                @if(auth()->check())
-                    <li class="nav-item">
-                        <a href="/dashboard" class="nav-link">
-                            <i class="fas fa-home"></i>
-                            <span>Home</span>
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a href="/donate-request" class="nav-link">
-                            <i class="fas fa-droplet"></i>
-                            <span>Blood Request</span>
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a href="/history" class="nav-link">
-                            <i class="fas fa-history"></i>
-                            <span>History</span>
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a href="/hospitals" class="nav-link">
-                            <i class="fas fa-hospital"></i>
-                            <span>Hospitals</span>
-                        </a>
-                    </li>
-                    <li class="nav-item dropdown">
-                        <a href="#" class="nav-link">
-                            <i class="fas fa-user"></i>
-                            <span>Profile</span>
-                            <i class="fas fa-chevron-down"></i>
-                        </a>
-                        <div class="dropdown-menu">
-                            <a href="/profile" class="dropdown-item">
-                                <i class="fas fa-user-edit"></i>
-                                <span>Update Profile</span>
-                            </a>
-                            <a href="/profile/settings" class="dropdown-item">
-                                <i class="fas fa-cog"></i>
-                                <span>Settings</span>
-                            </a>
-                            <a href="/profile/donations" class="dropdown-item">
-                                <i class="fas fa-heart"></i>
-                                <span>My Donations</span>
-                            </a>
-                        </div>
-                    </li>
-                @else
-                    <li class="nav-item">
-                        <a href="/" class="nav-link">
-                            <i class="fas fa-home"></i>
-                            <span>Home</span>
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a href="#about" class="nav-link">
-                            <i class="fas fa-info-circle"></i>
-                            <span>About</span>
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a href="#contact" class="nav-link">
-                            <i class="fas fa-envelope"></i>
-                            <span>Contact</span>
-                        </a>
-                    </li>
-                @endif
-            </ul>
-
-            <div class="auth-buttons" id="authButtons">
-                @if(auth()->check())
-                    <div class="user-profile">
-                        <div class="avatar">{{ strtoupper(substr(auth()->user()->name, 0, 1)) }}</div>
-                        <div class="user-info">
-                            <span class="user-name">{{ auth()->user()->name }}</span>
-                            <span class="user-role">Donor</span>
-                        </div>
-                        <form action="{{ route('logout') }}" method="POST" style="display: inline;">
-                            @csrf
-                            <button type="submit" class="btn-auth btn-logout">
-                                <i class="fas fa-sign-out-alt"></i>
-                                <span>Logout</span>
-                            </button>
-                        </form>
-                    </div>
-                @else
-                    <a href="{{ route('login') }}" class="btn-auth btn-login">
-                        <i class="fas fa-sign-in-alt"></i>
-                        <span>Login</span>
-                    </a>
-                    <a href="{{ route('register') }}" class="btn-auth btn-register">
-                        <i class="fas fa-user-plus"></i>
-                        <span>Register</span>
-                    </a>
-                @endif
-            </div>
-        </div>
-    </nav>
+    <!-- Role-Based Navigation Bar -->
+    @if(auth()->check())
+        @if(auth()->user()->role === 'admin')
+            @include('layouts.admin-nav')
+        @elseif(auth()->user()->role === 'hospital')
+            @include('layouts.hospital-nav')
+        @else
+            @include('layouts.user-nav')
+        @endif
+    @else
+        @include('layouts.user-nav')
+    @endif
 
     <!-- Main Content -->
     <div class="main-content">
