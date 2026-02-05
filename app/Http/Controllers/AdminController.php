@@ -143,7 +143,7 @@ class AdminController extends Controller
 
     // show donate request form
     public function showLoginForm(){
-        return view('blood_admin.donate-request');
+        return view('blood_admin.donation-request.donate-request');
     }
 
     // View all donation requests
@@ -153,9 +153,21 @@ class AdminController extends Controller
             ->orderBy('created_at', 'desc')
             ->get();
 
-        return view('blood_admin.donate-request', [
+        return view('blood_admin.donation-request.donate-request', [
             'donationRequests' => $requests
         ]);
+    }
+
+    //pending donation requests
+    public function pendingDonationRequests(){
+        $pendingRequests = DonationRequest::pending()
+            ->with(['user', 'hospital'])
+            ->orderBy('created_at', 'desc')
+            ->get();
+
+            return view('blood_admin.donation-request.pending-requests', [
+                'pendingRequests' => $pendingRequests
+            ]);
     }
 
     // Approve donation request
@@ -174,6 +186,19 @@ class AdminController extends Controller
         return back()->with('success', 'Donation request approved successfully!');
     }
 
+    // view approved donation requests
+    public function approvedDonationRequests()
+    {
+        $approvedRequests = DonationRequest::approved()
+            ->with(['user', 'hospital'])
+            ->orderBy('approved_at', 'desc')
+            ->get();
+
+            return view('blood_admin.donation-request.approve-requests', [
+                'approvedRequests' => $approvedRequests
+            ]);
+    }
+
     // Reject donation request
     public function rejectDonationRequest(DonationRequest $donationRequest, Request $request)
     {
@@ -188,6 +213,72 @@ class AdminController extends Controller
         ]);
 
         return back()->with('success', 'Donation request rejected successfully!');
+    }
+
+    // view rejected donation requests
+    public function rejectedDonationRequests(){
+        $rejectedRequests = DonationRequest::rejected()
+            ->with(['user', 'hospital'])
+            ->orderBy('rejected_at', 'desc')
+            ->get();
+
+            return view('blood_admin.donation-request.reject-requests', [
+                'rejectedRequests' => $rejectedRequests
+            ]);
+    }
+
+    // View pending donation requests
+    public function pendingRequests()
+    {
+        $donationRequests = DonationRequest::with(['user', 'hospital'])
+            ->where('status', 'pending')
+            ->orderBy('created_at', 'desc')
+            ->get();
+
+        return view('blood_admin.donation-request.pending-requests', compact('donationRequests'));
+    }
+
+    // View approved donation requests
+    public function approvedRequests()
+    {
+        $donationRequests = DonationRequest::with(['user', 'hospital'])
+            ->where('status', 'approved')
+            ->orderBy('approved_at', 'desc')
+            ->get();
+
+        return view('blood_admin.donation-request.approve-requests', compact('donationRequests'));
+    }
+
+    // View rejected donation requests
+    public function rejectedRequests()
+    {
+        $donationRequests = DonationRequest::with(['user', 'hospital'])
+            ->where('status', 'rejected')
+            ->orderBy('rejected_at', 'desc')
+            ->get();
+
+        return view('blood_admin.donation-request.reject-requests', compact('donationRequests'));
+    }
+
+    // View all donation requests
+    public function allRequests()
+    {
+        $donationRequests = DonationRequest::with(['user', 'hospital'])
+            ->orderBy('created_at', 'desc')
+            ->get();
+
+        $pendingCount = DonationRequest::where('status', 'pending')->count();
+        $approvedCount = DonationRequest::where('status', 'approved')->count();
+        $rejectedCount = DonationRequest::where('status', 'rejected')->count();
+        $totalRequests = $donationRequests->count();
+
+        return view('blood_admin.donation-request.all-requests', [
+            'donationRequests' => $donationRequests,
+            'pendingCount' => $pendingCount,
+            'approvedCount' => $approvedCount,
+            'rejectedCount' => $rejectedCount,
+            'totalRequests' => $totalRequests,
+        ]);
     }
 
     // Handle admin logout

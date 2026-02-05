@@ -118,6 +118,7 @@
 		.stat-card.pending::before { background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%); }
 		.stat-card.approved::before { background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%); }
 		.stat-card.rejected::before { background: linear-gradient(135deg, #fa709a 0%, #fee140 100%); }
+		.stat-card.all-requests::before { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); }
 
 		.stat-header {
 			display: flex;
@@ -147,6 +148,7 @@
 		.stat-card.pending .stat-icon { background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%); }
 		.stat-card.approved .stat-icon { background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%); }
 		.stat-card.rejected .stat-icon { background: linear-gradient(135deg, #fa709a 0%, #fee140 100%); }
+		.stat-card.all-requests .stat-icon { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); }
 
 		.stat-number {
 			font-size: 36px;
@@ -395,6 +397,19 @@
 			font-weight: 700;
 			color: #333;
 		}
+        .stats a {
+            text-decoration: none;
+            color: inherit;
+        }
+
+        .stat-card {
+            cursor: pointer;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.15);
+        }
 
 		@media (max-width: 768px) {
 			.header {
@@ -463,6 +478,7 @@
 	<div class="container">
 		<!-- Statistics Cards -->
 		<div class="stats">
+            <a href="{{ route('admin.donate.pending') }}" style="text-decoration: none;">
 			<div class="stat-card pending">
 				<div class="stat-header">
 					<div class="stat-title">Pending Requests</div>
@@ -470,6 +486,9 @@
 				</div>
 				<div class="stat-number">{{ $requestStats['pending'] ?? 0 }}</div>
 			</div>
+            </a>
+
+            <a href="{{ route('admin.donate.approved') }}" style="text-decoration: none;">
 			<div class="stat-card approved">
 				<div class="stat-header">
 					<div class="stat-title">Approved Requests</div>
@@ -477,6 +496,9 @@
 				</div>
 				<div class="stat-number">{{ $requestStats['approved'] ?? 0 }}</div>
 			</div>
+            </a>
+
+            <a href="{{ route('admin.donate.rejected') }}" style="text-decoration: none;">
 			<div class="stat-card rejected">
 				<div class="stat-header">
 					<div class="stat-title">Rejected Requests</div>
@@ -484,6 +506,17 @@
 				</div>
 				<div class="stat-number">{{ $requestStats['rejected'] ?? 0 }}</div>
 			</div>
+            </a>
+
+            <a href="{{ route('admin.donate.all') }}" style="text-decoration: none;">
+			<div class="stat-card all-requests">
+				<div class="stat-header">
+					<div class="stat-title">All Requests</div>
+					<div class="stat-icon">📋</div>
+				</div>
+				<div class="stat-number">{{ ($requestStats['pending'] ?? 0) + ($requestStats['approved'] ?? 0) + ($requestStats['rejected'] ?? 0) }}</div>
+			</div>
+            </a>
 		</div>
 
 		@if(session('success'))
@@ -578,7 +611,6 @@
 								<th>User</th>
 								<th>Hospital</th>
 								<th>Blood Type</th>
-								<th>Units</th>
 								<th>Status</th>
 								<th>Actions</th>
 							</tr>
@@ -590,7 +622,6 @@
 									<td><strong>{{ $request->user->name ?? 'N/A' }}</strong></td>
 									<td>{{ $request->hospital->user_name ?? 'N/A' }}</td>
 									<td><strong style="color: #e10600;">{{ $request->blood_type }}</strong></td>
-									<td>{{ $request->units }} {{ Str::plural('unit', $request->units) }}</td>
 									<td>
 										@if($request->status === 'pending')
 											<span class="status-badge status-pending">● Pending</span>

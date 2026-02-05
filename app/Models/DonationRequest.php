@@ -10,7 +10,6 @@ class DonationRequest extends Model
         'user_id',
         'hospital_id',
         'blood_type',
-        'units',
         'reason',
         'status',
         'admin_notes',

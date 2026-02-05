@@ -151,6 +151,10 @@ Route::middleware(['auth', 'admin'])->group(function () {
     Route::put('/admin/hospitals/{hospital}/toggle-availability', [AdminController::class, 'toggleAvailability'])->name('admin.hospitals.toggle-availability');
     Route::get('/admin/hospitals-map', [AdminController::class, 'showHospitalsMap'])->name('admin.hospitals-map');
     Route::get('/admin/donate-request', [AdminController::class, 'viewDonationRequests'])->name('admin.donate.request');
+    Route::get('/admin/donate-requests/all', [AdminController::class, 'allRequests'])->name('admin.donate.all');
+    Route::get('/admin/donate-requests/pending', [AdminController::class, 'pendingRequests'])->name('admin.donate.pending');
+    Route::get('/admin/donate-requests/approved',[AdminController::class, 'approvedRequests'])->name('admin.donate.approved');
+    Route::get('/admin/donate-requests/rejected',[AdminController::class, 'rejectedRequests'])->name('admin.donate.rejected');
     Route::post('/admin/donate-request/{donationRequest}/approve', [AdminController::class, 'approveDonationRequest'])->name('admin.donate.approve');
     Route::post('/admin/donate-request/{donationRequest}/reject', [AdminController::class, 'rejectDonationRequest'])->name('admin.donate.reject');
 });

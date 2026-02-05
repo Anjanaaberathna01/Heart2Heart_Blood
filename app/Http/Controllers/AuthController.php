@@ -254,6 +254,7 @@ class AuthController extends Controller{
         )->header('Content-Type', 'text/html');
     }
 
+
     // Handle logout
     public function logout(Request $request)
     {

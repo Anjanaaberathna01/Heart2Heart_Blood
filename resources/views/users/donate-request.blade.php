@@ -192,12 +192,27 @@
         <strong>Success!</strong> {{ session('success') ?? "Your donation request has been submitted successfully. We'll notify you soon." }}
     </div>
 
+    @if ($errors->any())
+        <div class="info-box" style="border-left-color: #dc3545; background: #ffe6e6;">
+            <p><strong>Error:</strong> Please correct the errors below and resubmit the form.</p>
+        </div>
+    @endif
+
     <div class="info-box">
         <p><strong>Information:</strong> Please fill in your details and blood type. Our partner hospitals will review your request and contact you as soon as compatible blood is available.</p>
     </div>
 
     <form id="donationForm" method="POST" action="{{ route('donate.request.store') }}">
         @csrf
+        @if ($errors->any())
+            @if ($errors->has('hospital_id'))
+                <div class="info-box" style="border-left-color: #dc3545; background: #ffe6e6;">
+                    <p><strong>Error:</strong> {{ $errors->first('hospital_id') }}</p>
+                </div>
+
+            @endif
+
+        @endif
         <div class="form-group">
             <label for="name">Full Name <span class="required">*</span></label>
             <input type="text" id="name" name="name" required placeholder="Enter your full name" value="{{ auth()->user()->name ?? '' }}">

@@ -457,7 +457,6 @@
                         <th>User</th>
                         <th>Hospital</th>
                         <th>Blood Type</th>
-                        <th>Units</th>
                         <th>Status</th>
                         <th>Actions</th>
                     </tr>
@@ -476,7 +475,6 @@
                             </td>
                             <td class="hospital-name">{{ $request->hospital->user_name ?? 'N/A' }}</td>
                             <td><strong class="blood-type">{{ $request->blood_type }}</strong></td>
-                            <td class="units">{{ $request->units }}</td>
                             <td><span class="badge {{ $request->status }}">{{ ucfirst($request->status) }}</span></td>
                             <td>
                                 <div class="action-buttons">

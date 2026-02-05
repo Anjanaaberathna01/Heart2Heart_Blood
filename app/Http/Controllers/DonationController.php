@@ -23,7 +23,6 @@ class DonationController extends Controller
             'email' => 'required|email',
             'phone' => 'required|string|digits:10',
             'blood_type' => 'required|string|in:O+,O-,A+,A-,B+,B-,AB+,AB-',
-            'units' => 'required|integer|min:1',
             'district' => 'required|string',
             'hospital_id' => 'required|exists:hospitals,id',
             'reason' => 'nullable|string|max:500'
@@ -34,13 +33,10 @@ class DonationController extends Controller
             'user_id' => Auth::id(),
             'hospital_id' => $request->hospital_id,
             'blood_type' => $request->blood_type,
-            'units' => $request->units,
             'reason' => $request->reason,
             'status' => 'pending'
         ]);
 
-        return redirect()->route('donate.request')
-            ->with('success', 'Your donation request has been submitted successfully! We will review it and notify you soon.');
     }
 
     // View user's own donation requests
