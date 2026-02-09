@@ -247,7 +247,7 @@
             <p style="font-size: 13px; color: #0066cc; margin: 0;"><strong>Note:</strong> Default password will be set to <strong>12345678</strong>. Hospital can change it after first login.</p>
         </div>
             <button type="submit" class="btn-submit">Add Hospital</button>
-            <a href="{{ route('admin.hospitals') }}" style="flex: 1; display: flex; align-items: center; justify-content: center; text-decoration: none;">
+            <a href="{{ route('admin.dashboard') }}" style="flex: 1; display: flex; align-items: center; justify-content: center; text-decoration: none;">
                 <button type="button" class="btn-cancel" style="width: 100%;">Cancel</button>
             </a>
         </div>

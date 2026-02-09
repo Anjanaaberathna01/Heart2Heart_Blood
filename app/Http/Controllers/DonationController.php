@@ -37,6 +37,8 @@ class DonationController extends Controller
             'status' => 'pending'
         ]);
 
+        return redirect()->route('dashboard')->with('success', 'Donation request submitted successfully!');
+
     }
 
     // View user's own donation requests
@@ -47,7 +49,25 @@ class DonationController extends Controller
             ->orderBy('created_at', 'desc')
             ->get();
 
-        return view('users.my-requests', ['requests' => $requests]);
+        return view('users.history', ['requests' => $requests]);
+    }
+
+    // View user's inbox (approved requests with reference numbers)
+    public function viewInbox()
+    {
+        $approvedRequests = DonationRequest::where('user_id', Auth::id())
+            ->where('status', 'approved')
+            ->orderBy('approved_at', 'desc')
+            ->get();
+
+        foreach ($approvedRequests as $request) {
+            if (!$request->reference_number) {
+                $request->reference_number = 'H2H-' . now()->format('Ymd') . '-' . str_pad($request->id, 6, '0', STR_PAD_LEFT);
+                $request->save();
+            }
+        }
+
+        return view('users.inbox', ['approvedRequests' => $approvedRequests]);
     }
 
     // Get hospital details
@@ -63,4 +83,5 @@ class DonationController extends Controller
             'available' => $hospital->available_for_donation
         ]);
     }
+
 }

@@ -14,7 +14,8 @@ class DonationRequest extends Model
         'status',
         'admin_notes',
         'approved_at',
-        'rejected_at'
+        'rejected_at',
+        'reference_number'
     ];
 
     protected $casts = [

@@ -177,50 +177,62 @@
         <button onclick="applyFilters()">Search</button>
     </div>
 
+
+    @if ($requests->isEmpty())
     <!-- Empty State -->
     <div class="empty-state">
         <i class="fas fa-inbox"></i>
         <h3>No History Yet</h3>
         <p>You don't have any blood donation requests yet. <a href="{{ route('donate.request') }}" style="color: #dc3545; text-decoration: none; font-weight: 600;">Create one now</a></p>
     </div>
+    @else
 
     <!-- Sample History Cards (for demonstration) -->
-    <div id="history-list" style="display: none;">
+    <div id="history-list">
+        @foreach ($requests as $request)
         <div class="history-card">
             <div style="display: flex; justify-content: space-between; align-items: start;">
                 <div>
-                    <h3>Blood Type O+ Request</h3>
-                    <span class="status-badge status-completed">Completed</span>
+                    <h3>Blood Type {{ $request->blood_type }}</h3>
+                    <span class="status-badge status-{{ $request->status }}">{{ ucfirst($request->status) }}</span>
                 </div>
-                <span style="color: #999; font-size: 12px;">Jan 15, 2026</span>
+                <span style="color: #999; font-size: 12px;">{{ $request->created_at->format('Y M, d') }}</span>
             </div>
 
             <div class="history-meta">
                 <div class="meta-item">
                     <strong>Hospital</strong>
-                    <span>Colombo Hospital</span>
+                    <span>{{ $request->hospital->user_name }}</span>
+                </div>
+                <div class="meta-item">
+                    <strong>District</strong>
+                    <span>{{ $request->hospital->district }}</span>
                 </div>
                 <div class="meta-item">
                     <strong>Blood Type</strong>
-                    <span>O+ (Positive)</span>
+                    <span>{{ $request->blood_type }}</span>
                 </div>
                 <div class="meta-item">
-                    <strong>Units</strong>
-                    <span>2 units</span>
+                    <strong>Status</strong>
+                    <span>{{ $request->status }}</span>
                 </div>
                 <div class="meta-item">
                     <strong>Completed On</strong>
-                    <span>Jan 16, 2026</span>
+                    <span>{{ $request->created_at->format('Y M, d') }}</span>
                 </div>
             </div>
 
+            @if ($request->reason)
             <p style="color: #666; font-size: 14px; margin-top: 10px;">
-                <strong>Notes:</strong> Blood was successfully received for the surgical procedure.
+                <strong>Notes:</strong> {{ $request->reason }}
             </p>
+            @endif
+
         </div>
+        @endforeach
     </div>
 </div>
-
+@endif
 <script>
     function applyFilters() {
         // Implement filtering logic here

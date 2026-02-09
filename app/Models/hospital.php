@@ -2,11 +2,11 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Support\Facades\Hash;
 
-class Hospital extends Model
+class Hospital extends Authenticatable
 {
     use HasFactory;
 
@@ -23,7 +23,7 @@ class Hospital extends Model
         'password',
         'district',
         'latitude',
-        'longitude'
+        'longitude',
     ];
 
     protected $casts = [

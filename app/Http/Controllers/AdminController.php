@@ -33,6 +33,7 @@ class AdminController extends Controller
         ]);
     }
 
+
     // Show add hospital form
     public function showAddHospitalForm()
     {
@@ -160,13 +161,13 @@ class AdminController extends Controller
 
     //pending donation requests
     public function pendingDonationRequests(){
-        $pendingRequests = DonationRequest::pending()
+        $donationRequests = DonationRequest::pending()
             ->with(['user', 'hospital'])
             ->orderBy('created_at', 'desc')
             ->get();
 
             return view('blood_admin.donation-request.pending-requests', [
-                'pendingRequests' => $pendingRequests
+                'donationRequests' => $donationRequests
             ]);
     }
 
@@ -180,7 +181,8 @@ class AdminController extends Controller
         $donationRequest->update([
             'status' => 'approved',
             'admin_notes' => $request->admin_notes,
-            'approved_at' => now()
+            'approved_at' => now(),
+            'reference_number' => 'H2H-' . now()->format('Ymd') . '-' . str_pad($donationRequest->id, 6, '0', STR_PAD_LEFT),
         ]);
 
         return back()->with('success', 'Donation request approved successfully!');
@@ -189,13 +191,14 @@ class AdminController extends Controller
     // view approved donation requests
     public function approvedDonationRequests()
     {
-        $approvedRequests = DonationRequest::approved()
+        $donationRequests = DonationRequest::approved()
             ->with(['user', 'hospital'])
             ->orderBy('approved_at', 'desc')
             ->get();
 
+
             return view('blood_admin.donation-request.approve-requests', [
-                'approvedRequests' => $approvedRequests
+                'donationRequests' => $donationRequests
             ]);
     }
 
@@ -217,47 +220,14 @@ class AdminController extends Controller
 
     // view rejected donation requests
     public function rejectedDonationRequests(){
-        $rejectedRequests = DonationRequest::rejected()
+        $donationRequests = DonationRequest::rejected()
             ->with(['user', 'hospital'])
             ->orderBy('rejected_at', 'desc')
             ->get();
 
             return view('blood_admin.donation-request.reject-requests', [
-                'rejectedRequests' => $rejectedRequests
+                'donationRequests' => $donationRequests
             ]);
-    }
-
-    // View pending donation requests
-    public function pendingRequests()
-    {
-        $donationRequests = DonationRequest::with(['user', 'hospital'])
-            ->where('status', 'pending')
-            ->orderBy('created_at', 'desc')
-            ->get();
-
-        return view('blood_admin.donation-request.pending-requests', compact('donationRequests'));
-    }
-
-    // View approved donation requests
-    public function approvedRequests()
-    {
-        $donationRequests = DonationRequest::with(['user', 'hospital'])
-            ->where('status', 'approved')
-            ->orderBy('approved_at', 'desc')
-            ->get();
-
-        return view('blood_admin.donation-request.approve-requests', compact('donationRequests'));
-    }
-
-    // View rejected donation requests
-    public function rejectedRequests()
-    {
-        $donationRequests = DonationRequest::with(['user', 'hospital'])
-            ->where('status', 'rejected')
-            ->orderBy('rejected_at', 'desc')
-            ->get();
-
-        return view('blood_admin.donation-request.reject-requests', compact('donationRequests'));
     }
 
     // View all donation requests

@@ -46,14 +46,14 @@ class AuthController extends Controller{
         // Check if user is a hospital admin
         $hospital = Hospital::where('email', $email)->first();
         if ($hospital && Hash::check($password, $hospital->password)) {
-            // Login as hospital admin - store in session with role
-            session([
-                'hospital_admin_id' => $hospital->id,
-                'hospital' => $hospital,
-                'role' => 'hospital',
-                'hospital_email' => $hospital->email,
-            ]);
+            // Login as hospital admin using the hospital guard
+            Auth::guard('hospital')->login($hospital);
             $request->session()->regenerate();
+            if (Hash::check('12345678', $hospital->password)) {
+                return redirect()->route('hospital.password.form')
+                    ->with('warning', 'Please change your default password before continuing.');
+            }
+
             return redirect()->intended('/hospital/dashboard')->with('success', 'Welcome Hospital Admin!');
         }
 

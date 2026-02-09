@@ -456,15 +456,18 @@
 		<div class="content-card">
 			<div class="card-header">
 				<div>
-					<h2 class="card-title">🏥 Hospitals Management</h2>
+					<h2 class="card-title">Hospitals Management</h2>
 				</div>
 				<div>
 					<span class="badge">Total: {{ $hospitals->count() }}</span>
 				</div>
+                <div class="btn-group">
+                    <a href="{{ route('admin.add.hospital') }}" class="btn">Add Hospital</a>
+                </div>
 			</div>
 
 			@if($hospitals->isEmpty())
-				<div class="empty">📋 No hospitals added yet. Click "Add Hospital" to get started!</div>
+				<div class="empty">No hospitals added yet. Click "Add Hospital" to get started!</div>
 			@else
 				<div class="table-wrap">
 					<table>

@@ -68,6 +68,7 @@
         padding: 30px;
         border-radius: 10px;
         margin-bottom: 30px;
+        position: relative;
     }
 
     .welcome-section h1 {
@@ -76,6 +77,29 @@
 
     .welcome-section p {
         opacity: 0.9;
+    }
+
+    .inbox-link {
+        position: absolute;
+        top: 16px;
+        right: 16px;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        background: rgba(255, 255, 255, 0.18);
+        color: #fff;
+        padding: 8px 12px;
+        border-radius: 999px;
+        text-decoration: none;
+        font-size: 13px;
+        font-weight: 600;
+        border: 1px solid rgba(255, 255, 255, 0.35);
+        transition: transform 0.2s ease, background 0.2s ease;
+    }
+
+    .inbox-link:hover {
+        transform: translateY(-1px);
+        background: rgba(255, 255, 255, 0.28);
     }
 
     .actions-grid {
@@ -136,6 +160,9 @@
     <div class="welcome-section">
         <h1>Welcome to Heart2Heart LK</h1>
         <p>Blood Donation Management System - Find hospitals and request blood donations</p>
+        <a class="inbox-link" href="{{ route('user.inbox') }}">
+            <i class="fas fa-inbox"></i> Inbox
+        </a>
     </div>
 
     <!-- Map Section -->

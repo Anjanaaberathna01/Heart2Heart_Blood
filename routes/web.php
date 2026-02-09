@@ -4,12 +4,14 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\DonationController;
+use App\Http\Controllers\HospitalController;
 use Illuminate\Support\Facades\Password;
 use Illuminate\Auth\Events\PasswordReset;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
 use App\Http\Controllers\Auth\OtpPasswordResetController;
+use App\Http\Middleware\HospitalAuth;
 
 // Public routes
 Route::get('/', function () {
@@ -32,10 +34,6 @@ Route::get('/dashboard', function () {
     return view('users.dashboard', ['hospitals' => $hospitals]);
 })->name('dashboard');
 
-// User history page
-Route::get('/history', function () {
-    return view('users.history');
-})->name('user.history');
 
 // User profile page
 Route::get('/profile', function () {
@@ -55,6 +53,8 @@ Route::get('/hospitals-map', function () {
 Route::middleware('guest')->group(function () {
     Route::get('/login', [AuthController::class, 'showLoginForm'])->name('login');
     Route::post('/login', [AuthController::class, 'login']);
+    Route::get('/admin/login', [AuthController::class, 'showLoginForm'])->name('admin.login');
+    Route::post('/admin/login', [AuthController::class, 'login']);
     Route::get('/register', [AuthController::class, 'showRegisterForm'])->name('register');
     Route::post('/register', [AuthController::class, 'register']);
 
@@ -125,6 +125,8 @@ Route::middleware('auth')->group(function () {
      // Show donate request form
     Route::get('/donate-request', [DonationController::class, 'showDonateRequestForm'])->name('donate.request');
     Route::post('/donate-request', [DonationController::class, 'storeDonationRequest'])->name('donate.request.store');
+    Route::get('/history', [DonationController::class, 'viewMyRequests'])->name('user.history');
+    Route::get('/inbox', [DonationController::class, 'viewInbox'])->name('user.inbox');
 
 });
 
@@ -136,9 +138,6 @@ Route::middleware('auth')->group(function () {
                     /                   /
                 */
 Route::middleware(['auth', 'admin'])->group(function () {
-
-    Route::get('admin/login',[AdminController::class,'showLoginForm'])->name('admin.login');
-    Route::post('admin/login',[AdminController::class,'login']);
     Route::get('admin/dashboard',[AdminController::class,'showDashboard'])->name('admin.dashboard');
     Route::post('admin/logout',[AdminController::class,'logout'])->name('admin.logout');
     Route::get('/admin/hospitals/add', [AdminController::class, 'showAddHospitalForm'])->name('admin.add.hospital');
@@ -152,9 +151,23 @@ Route::middleware(['auth', 'admin'])->group(function () {
     Route::get('/admin/hospitals-map', [AdminController::class, 'showHospitalsMap'])->name('admin.hospitals-map');
     Route::get('/admin/donate-request', [AdminController::class, 'viewDonationRequests'])->name('admin.donate.request');
     Route::get('/admin/donate-requests/all', [AdminController::class, 'allRequests'])->name('admin.donate.all');
-    Route::get('/admin/donate-requests/pending', [AdminController::class, 'pendingRequests'])->name('admin.donate.pending');
-    Route::get('/admin/donate-requests/approved',[AdminController::class, 'approvedRequests'])->name('admin.donate.approved');
-    Route::get('/admin/donate-requests/rejected',[AdminController::class, 'rejectedRequests'])->name('admin.donate.rejected');
+    Route::get('/admin/donate-requests/pending', [AdminController::class, 'pendingDonationRequests'])->name('admin.donate.pending');
+    Route::get('/admin/donate-requests/approved',[AdminController::class, 'approvedDonationRequests'])->name('admin.donate.approved');
+    Route::get('/admin/donate-requests/rejected',[AdminController::class, 'rejectedDonationRequests'])->name('admin.donate.rejected');
     Route::post('/admin/donate-request/{donationRequest}/approve', [AdminController::class, 'approveDonationRequest'])->name('admin.donate.approve');
     Route::post('/admin/donate-request/{donationRequest}/reject', [AdminController::class, 'rejectDonationRequest'])->name('admin.donate.reject');
+});
+
+                /*
+                    /                   /
+                    /                   /
+                        Hospital Admin routes
+                    /                   /
+                    /                   /
+                */
+Route::middleware([HospitalAuth::class])->group(function () {
+    Route::get('hospital/dashboard', [HospitalController::class, 'showDashboard'])->name('hospital.dashboard');
+    Route::get('hospital/change-password', [HospitalController::class, 'showChangePasswordForm'])->name('hospital.password.form');
+    Route::post('hospital/change-password', [HospitalController::class, 'changePassword'])->name('hospital.password.update');
+    Route::post('hospital/logout', [HospitalController::class, 'logout'])->name('hospital.logout');
 });
