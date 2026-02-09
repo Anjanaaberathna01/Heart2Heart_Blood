@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Support\Facades\Hash;
 
 class Hospital extends Authenticatable
@@ -39,5 +40,11 @@ class Hospital extends Authenticatable
     public function setPasswordAttribute($value)
     {
         $this->attributes['password'] = Hash::make($value);
+    }
+
+    // Relationship with DonationRequest
+    public function donationRequests(): HasMany
+    {
+        return $this->hasMany(DonationRequest::class, 'hospital_id');
     }
 }

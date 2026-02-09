@@ -54,4 +54,44 @@ class HospitalController extends Controller
 
         return redirect()->route('login')->with('success', 'Logged out successfully.');
     }
+
+    // show donation requests for hospital admin
+    public function viewDonationRequests()
+    {
+        $hospital = Auth::guard('hospital')->user();
+
+        if (!$hospital) {
+            return redirect()->route('hospital.dashboard')->with('error', 'Hospital not found. Please log in again.');
+        }
+
+        $donationRequests = $hospital->donationRequests()
+            ->with('user')
+            ->where('hospital_id', $hospital->id)
+            ->where('status', 'approved')
+            ->orderBy('created_at', 'desc')
+            ->get();
+
+        return view('hospital_admin.view-request', [
+            'donationRequests' => $donationRequests,
+        ]);
+    }
+
+    // Blood article
+    public function viewBloodArticle()
+    {
+        return view('hospital_admin.blood-article');
+    }
+
+    // create Blood article
+    public function createBloodArticle(Request $request)
+    {
+        $request->validate([
+            'title' => 'required|string|max:255',
+            'content' => 'required|string',
+        ]);
+
+        // Logic to save the blood article (e.g., create a new BloodArticle model instance and save it to the database)
+
+        return redirect()->route('hospital.dashboard')->with('success', 'Blood article created successfully!');
+    }
 }

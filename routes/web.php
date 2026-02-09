@@ -169,5 +169,6 @@ Route::middleware([HospitalAuth::class])->group(function () {
     Route::get('hospital/dashboard', [HospitalController::class, 'showDashboard'])->name('hospital.dashboard');
     Route::get('hospital/change-password', [HospitalController::class, 'showChangePasswordForm'])->name('hospital.password.form');
     Route::post('hospital/change-password', [HospitalController::class, 'changePassword'])->name('hospital.password.update');
+    Route::get('hospital/donation-requests', [HospitalController::class, 'viewDonationRequests'])->name('hospital.donation.requests');
     Route::post('hospital/logout', [HospitalController::class, 'logout'])->name('hospital.logout');
 });

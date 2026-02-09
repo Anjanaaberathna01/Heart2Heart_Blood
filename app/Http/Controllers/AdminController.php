@@ -175,7 +175,7 @@ class AdminController extends Controller
     public function approveDonationRequest(DonationRequest $donationRequest, Request $request)
     {
         $request->validate([
-            'admin_notes' => 'nullable|string|max:500'
+            'admin_notes' => 'nullable|string|max:500',
         ]);
 
         $donationRequest->update([
