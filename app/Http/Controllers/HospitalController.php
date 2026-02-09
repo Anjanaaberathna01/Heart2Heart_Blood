@@ -76,22 +76,4 @@ class HospitalController extends Controller
         ]);
     }
 
-    // Blood article
-    public function viewBloodArticle()
-    {
-        return view('hospital_admin.blood-article');
-    }
-
-    // create Blood article
-    public function createBloodArticle(Request $request)
-    {
-        $request->validate([
-            'title' => 'required|string|max:255',
-            'content' => 'required|string',
-        ]);
-
-        // Logic to save the blood article (e.g., create a new BloodArticle model instance and save it to the database)
-
-        return redirect()->route('hospital.dashboard')->with('success', 'Blood article created successfully!');
-    }
 }

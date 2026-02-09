@@ -6,6 +6,7 @@
         <div>
             <a href="{{ route('hospital.password.form') }}">Change Password</a> |
             <a href="{{ route('hospital.donation.requests') }}">View Donation Requests</a> |
+            <a href="{{ route('hospital_admin.blood-articles.index') }}">Manage Blood Articles</a> |
             <form method="POST" action="{{ route('hospital.logout') }}" style="display: inline;">
                 @csrf
                 <button type="submit">Logout</button>

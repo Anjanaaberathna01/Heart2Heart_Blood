@@ -5,6 +5,7 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\DonationController;
 use App\Http\Controllers\HospitalController;
+use App\Http\Controllers\BloodArticleController;
 use Illuminate\Support\Facades\Password;
 use Illuminate\Auth\Events\PasswordReset;
 use Illuminate\Http\Request;
@@ -170,5 +171,6 @@ Route::middleware([HospitalAuth::class])->group(function () {
     Route::get('hospital/change-password', [HospitalController::class, 'showChangePasswordForm'])->name('hospital.password.form');
     Route::post('hospital/change-password', [HospitalController::class, 'changePassword'])->name('hospital.password.update');
     Route::get('hospital/donation-requests', [HospitalController::class, 'viewDonationRequests'])->name('hospital.donation.requests');
+    Route::resource('hospital/blood-articles', BloodArticleController::class)->names('hospital_admin.blood-articles');
     Route::post('hospital/logout', [HospitalController::class, 'logout'])->name('hospital.logout');
 });
