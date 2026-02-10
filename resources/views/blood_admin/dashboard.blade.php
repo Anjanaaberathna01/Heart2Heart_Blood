@@ -339,6 +339,87 @@
 			font-weight: 700;
 			color: #333;
 		}
+
+		.article-grid {
+			display: grid;
+			grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+			gap: 20px;
+			margin-bottom: 30px;
+		}
+
+		.article-card {
+			background: #ffffff;
+			border-radius: 14px;
+			padding: 20px;
+			box-shadow: 0 4px 18px rgba(0, 0, 0, 0.08);
+			border: 1px solid #f1f1f1;
+			transition: transform 0.2s ease, box-shadow 0.2s ease;
+		}
+
+		.article-card:hover {
+			transform: translateY(-4px);
+			box-shadow: 0 10px 26px rgba(0, 0, 0, 0.12);
+		}
+
+		.article-card h3 {
+			margin: 0 0 12px;
+			font-size: 16px;
+			font-weight: 700;
+			color: #333;
+		}
+
+		.article-badge {
+			display: inline-flex;
+			align-items: center;
+			gap: 6px;
+			padding: 6px 12px;
+			border-radius: 999px;
+			font-size: 12px;
+			font-weight: 600;
+			margin-bottom: 12px;
+		}
+
+		.badge-pending {
+			background: #fff3cd;
+			color: #856404;
+		}
+
+		.badge-approved {
+			background: #d4edda;
+			color: #155724;
+		}
+
+		.badge-rejected {
+			background: #f8d7da;
+			color: #721c24;
+		}
+
+		.article-count {
+			font-size: 26px;
+			font-weight: 700;
+			color: #b80500;
+			margin-bottom: 12px;
+		}
+
+		.article-list {
+			list-style: none;
+			padding: 0;
+			margin: 0;
+			display: flex;
+			flex-direction: column;
+			gap: 8px;
+		}
+
+		.article-item {
+			font-size: 13px;
+			color: #555;
+			line-height: 1.4;
+		}
+
+		.article-item span {
+			color: #888;
+			font-size: 12px;
+		}
         .stats a {
             text-decoration: none;
             color: inherit;
@@ -409,7 +490,6 @@
 			<div class="stat-card pending">
 				<div class="stat-header">
 					<div class="stat-title">Pending Requests</div>
-					<div class="stat-icon">⏳</div>
 				</div>
 				<div class="stat-number">{{ $requestStats['pending'] ?? 0 }}</div>
 			</div>
@@ -419,7 +499,6 @@
 			<div class="stat-card approved">
 				<div class="stat-header">
 					<div class="stat-title">Approved Requests</div>
-					<div class="stat-icon">✅</div>
 				</div>
 				<div class="stat-number">{{ $requestStats['approved'] ?? 0 }}</div>
 			</div>
@@ -429,7 +508,6 @@
 			<div class="stat-card rejected">
 				<div class="stat-header">
 					<div class="stat-title">Rejected Requests</div>
-					<div class="stat-icon">❌</div>
 				</div>
 				<div class="stat-number">{{ $requestStats['rejected'] ?? 0 }}</div>
 			</div>
@@ -439,7 +517,6 @@
 			<div class="stat-card all-requests">
 				<div class="stat-header">
 					<div class="stat-title">All Requests</div>
-					<div class="stat-icon">📋</div>
 				</div>
 				<div class="stat-number">{{ ($requestStats['pending'] ?? 0) + ($requestStats['approved'] ?? 0) + ($requestStats['rejected'] ?? 0) }}</div>
 			</div>
@@ -451,6 +528,68 @@
 				✔️ {{ session('success') }}
 			</div>
 		@endif
+
+		<!-- article section -->
+        <div class="section-divider">
+            <h2 class="section-title">Blood Articles Overview</h2>
+		</div>
+
+		<div class="article-grid">
+			<div class="article-card">
+            <a href="{{ route("admin.articles") }}" style="text-decoration: none">
+				<span class="article-badge badge-pending">Pending</span>
+				<div class="article-count">{{ $articleStats['pending'] ?? 0 }}</div>
+				<h3>Latest pending articles</h3>
+				<ul class="article-list">
+					@forelse ($pendingArticles as $article)
+						<li class="article-item">
+							{{ $article->title }}
+							<span>• {{ $article->hospital_name }}</span>
+						</li>
+					@empty
+						<li class="article-item">No pending articles yet.</li>
+					@endforelse
+				</ul>
+            </a>
+			</div>
+
+			<div class="article-card">
+				<a href="{{ route('admin.articles.approved') }}" style="text-decoration: none">
+				<span class="article-badge badge-approved">Approved</span>
+				<div class="article-count">{{ $articleStats['approved'] ?? 0 }}</div>
+				<h3>Latest approved articles</h3>
+				<ul class="article-list">
+					@forelse ($approvedArticles as $article)
+						<li class="article-item">
+							{{ $article->title }}
+							<span>• {{ $article->hospital_name }}</span>
+						</li>
+					@empty
+						<li class="article-item">No approved articles yet.</li>
+					@endforelse
+				</ul>
+                </a>
+			</div>
+
+			<div class="article-card">
+				<a href="{{ route('admin.articles.rejected') }}" style="text-decoration: none">
+					<span class="article-badge badge-rejected">Rejected</span>
+					<div class="article-count">{{ $articleStats['rejected'] ?? 0 }}</div>
+					<h3>Latest rejected articles</h3>
+					<ul class="article-list">
+						@forelse ($rejectedArticles as $article)
+							<li class="article-item">
+								{{ $article->title }}
+								<span>• {{ $article->hospital_name }}</span>
+							</li>
+						@empty
+							<li class="article-item">No rejected articles yet.</li>
+						@endforelse
+					</ul>
+				</a>
+			</div>
+        </div>
+
 
 		<!-- Hospitals Section -->
 		<div class="content-card">

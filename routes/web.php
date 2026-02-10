@@ -157,7 +157,13 @@ Route::middleware(['auth', 'admin'])->group(function () {
     Route::get('/admin/donate-requests/rejected',[AdminController::class, 'rejectedDonationRequests'])->name('admin.donate.rejected');
     Route::post('/admin/donate-request/{donationRequest}/approve', [AdminController::class, 'approveDonationRequest'])->name('admin.donate.approve');
     Route::post('/admin/donate-request/{donationRequest}/reject', [AdminController::class, 'rejectDonationRequest'])->name('admin.donate.reject');
-});
+    Route::get('/admin/articles', [AdminController::class, 'viewArticles'])->name('admin.articles');
+    Route::get('/admin/articles/approve/{bloodArticle}', [AdminController::class, 'approveArticle'])->name('admin.articles.approve');
+    Route::get('/admin/articles/reject/{bloodArticle}', [AdminController::class, 'rejectArticle'])->name('admin.articles.reject');
+    Route::get('/admin/articles/approved', [AdminController::class, 'approvedArticles'])->name('admin.articles.approved');
+    Route::get('/admin/articles/rejected', [AdminController::class, 'rejectedArticles'])->name('admin.articles.rejected');
+
+    });
 
                 /*
                     /                   /

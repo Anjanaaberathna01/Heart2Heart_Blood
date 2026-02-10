@@ -88,6 +88,10 @@
         align-items: center;
     }
 
+    .nav-item.mobile-only {
+        display: none;
+    }
+
     .nav-link {
         display: flex;
         align-items: center;
@@ -267,6 +271,10 @@
             border-bottom: 1px solid rgba(255, 255, 255, 0.1);
         }
 
+        .nav-item.mobile-only {
+            display: flex;
+        }
+
         .nav-link {
             width: 100%;
             padding: 15px 20px;
@@ -400,6 +408,33 @@
                 <a href="{{ route('admin.add.hospital') }}" class="nav-link">
                     <i class="fas fa-plus-circle"></i>
                     <span>Add Hospital</span>
+                </a>
+            </li>
+            <li class="nav-item dropdown">
+                <a href="#" class="nav-link">
+                    <i class="fas fa-newspaper"></i>
+                    <span>Articles</span>
+                    <i class="fas fa-chevron-down"></i>
+                </a>
+                <div class="dropdown-menu">
+                <a href="{{ route("admin.articles") }}" class="dropdown-item">
+                    <i class="fas fa-eye"></i>
+                    <span>Pending Articles</span>
+                </a>
+                <a href="{{ route('admin.articles.approved') }}" class="dropdown-item">
+                    <i class="fas fa-check"></i>
+                    <span>Approved Articles</span>
+                </a>
+                <a href="{{ route('admin.articles.rejected') }}" class="dropdown-item">
+                    <i class="fas fa-times"></i>
+                    <span>Rejected Articles</span>
+                </a>
+            </div>
+            </li>
+            <li class="nav-item mobile-only">
+                <a href="{{ route('admin.logout') }}" class="nav-link">
+                    <i class="fas fa-sign-out-alt"></i>
+                    <span>Logout</span>
                 </a>
             </li>
         </ul>

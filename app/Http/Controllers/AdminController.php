@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Hospital;
 use App\Models\DonationRequest;
+use App\Models\BloodArticle;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
@@ -26,10 +27,33 @@ class AdminController extends Controller
             ->take(5)
             ->get();
 
+        $pendingArticles = BloodArticle::where('status', 'pending')
+            ->orderBy('created_at', 'desc')
+            ->take(3)
+            ->get();
+        $approvedArticles = BloodArticle::where('status', 'approved')
+            ->orderBy('created_at', 'desc')
+            ->take(3)
+            ->get();
+        $rejectedArticles = BloodArticle::where('status', 'rejected')
+            ->orderBy('created_at', 'desc')
+            ->take(3)
+            ->get();
+
+        $articleStats = [
+            'pending' => BloodArticle::where('status', 'pending')->count(),
+            'approved' => BloodArticle::where('status', 'approved')->count(),
+            'rejected' => BloodArticle::where('status', 'rejected')->count(),
+        ];
+
         return view('blood_admin.dashboard', [
             'hospitals' => $hospitals,
             'requestStats' => $requestStats,
             'latestRequests' => $latestRequests,
+            'pendingArticles' => $pendingArticles,
+            'approvedArticles' => $approvedArticles,
+            'rejectedArticles' => $rejectedArticles,
+            'articleStats' => $articleStats,
         ]);
     }
 
@@ -259,4 +283,52 @@ class AdminController extends Controller
         return redirect()->route('admin.login')->with('success', 'Logged out successfully.');
     }
 
+    // view articles
+    public function viewArticles(){
+        $articles = BloodArticle::where('status','pending')
+        ->orderBy('created_at', 'desc')
+        ->get();
+
+        return view('blood_admin.articles.index', [
+            'articles' => $articles
+        ]);
+    }
+
+    public function approveArticle(BloodArticle $bloodArticle)
+    {
+        $bloodArticle->update(['status' => 'approved']);
+
+        return redirect()->route('admin.articles')->with('success', 'Blood article approved successfully.');
+    }
+
+    public function rejectArticle(BloodArticle $bloodArticle)
+    {
+        $bloodArticle->update(['status' => 'rejected']);
+
+        return redirect()->route('admin.articles')->with('success', 'Blood article rejected successfully.');
+    }
+
+    //view approved articles
+    public function approvedArticles()
+    {
+        $articles = BloodArticle::where('status', 'approved')
+            ->orderBy('created_at', 'desc')
+            ->get();
+
+        return view('blood_admin.articles.approved', [
+            'articles' => $articles
+        ]);
+    }
+
+    //view rejected articles
+    public function rejectedArticles()
+    {
+        $articles = BloodArticle::where('status', 'rejected')
+            ->orderBy('created_at', 'desc')
+            ->get();
+
+        return view('blood_admin.articles.rejected', [
+            'articles' => $articles
+        ]);
+    }
 }

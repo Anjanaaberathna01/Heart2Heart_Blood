@@ -18,6 +18,7 @@ class BloodArticle extends Model
         'hospital_name',
         'blood_type',
         'description',
+        'status',
     ];
 
     protected $casts = [
